@@ -31,14 +31,23 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'pseudo' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'age' => ['required', 'integer', 'min:18'], // Exemple: Minimum 18 ans
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'first_name' => $request->first_name,
+            'pseudo' => $request->pseudo,
+            'age' => $request->age,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'date_inscription' => now(), // Enregistre la date actuelle comme date d'inscription
         ]);
 
         event(new Registered($user));
