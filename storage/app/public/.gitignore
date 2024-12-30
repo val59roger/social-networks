@@ -1,3 +1,6 @@
 *
 !profile_photos/
+!profile_photos/**
+!posts_photo/
+!posts_photo/**
 !.gitignore
