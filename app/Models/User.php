@@ -57,4 +57,10 @@ class User extends Authenticatable implements MustVerifyEmail
             $user->date_inscription = now(); // Remplit la colonne avec la date et l'heure actuelles
         });
     }
+
+    // Définir la relation inverse : un utilisateur a plusieurs publications
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

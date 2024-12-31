@@ -3,4 +3,6 @@
 !profile_photos/**
 !posts_photo/
 !posts_photo/**
+!img/
+!img/**
 !.gitignore
