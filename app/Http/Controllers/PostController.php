@@ -7,10 +7,18 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    // Afficher la liste des publications (posts) via lastest() pour les afficher du plus récent au plus ancien
     public function index()
     {
         $posts = Post::with('user')->latest()->get();
         return view('posts.index', compact('posts'));
+    }
+
+    // Afficher la liste des publications de l'utilisateur connecté
+    public function myPosts()
+    {
+        $posts = auth()->user()->posts; // Récupère les posts de l'utilisateur connecté
+        return view('posts.my-posts', compact('posts'));
     }
 
     // Afficher le formulaire de création
@@ -44,6 +52,42 @@ class PostController extends Controller
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Publication créée avec succès.');
+    }
+
+    // Afficher le formulaire de modification
+    public function edit($id)
+    {
+        $post = auth()->user()->posts()->findOrFail($id);
+        return view('posts.edit', compact('post'));
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        $post->update($validated);
+
+        return redirect()->route('posts.my-posts')->with('success', 'Post mis à jour avec succès.');
+    }
+
+
+
+    // Afficher la page de suppression
+    public function destroy($id)
+    {
+        $post = auth()->user()->posts()->findOrFail($id);
+        $post->delete();
+
+        return redirect()->route('posts.my-posts')->with('success', 'Post supprimé avec succès.');
     }
 }
 

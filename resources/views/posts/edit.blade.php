@@ -2,12 +2,13 @@
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __("Créer un nouveau post") }}
+                {{ __('Modifier la publication') }}
             </h2>
         </x-slot>
 
-        <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6 mt-6 space-y-6">
+        <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6 mt-6 space-y-6">
             @csrf
+            @method('PATCH')
 
             <!-- Titre -->
             <div>
@@ -19,7 +20,7 @@
                 </label>
                 <input type="text" name="title" id="title"
                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    value="{{ old('title') }}" required>
+                    value="{{ old('title', $post->title) }}" required>
                 @error('title')
                     <span class="text-red-600 text-sm">{{ $message }}</span>
                 @enderror
@@ -35,7 +36,7 @@
                 </label>
                 <textarea name="description" id="description" rows="4"
                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    required>{{ old('description') }}</textarea>
+                    required>{{ old('description', $post->description) }}</textarea>
                 @error('description')
                     <span class="text-red-600 text-sm">{{ $message }}</span>
                 @enderror
@@ -47,21 +48,27 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
-                    Ajouter une image
+                    Ajouter ou modifier l'image
                 </label>
                 <input type="file" name="image" id="image"
                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                     accept="image/*">
+                @if ($post->image)
+                    <div class="mt-4">
+                        <span class="block text-sm text-gray-600">Image actuelle :</span>
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="Image actuelle" class="mt-2 w-full max-w-xs rounded-lg shadow-md">
+                    </div>
+                @endif
                 @error('image')
                     <span class="text-red-600 text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Bouton Publier -->
+            <!-- Bouton de validation -->
             <div>
                 <button type="submit"
                     class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-blue-500 transition duration-150">
-                    Publier
+                    Valider la modification
                 </button>
             </div>
         </form>

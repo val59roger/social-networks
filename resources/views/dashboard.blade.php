@@ -1,8 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Bienvenue ') }}{{ Auth::user()->pseudo }}
-            <p>{{ __('Vous allez pouvoir voir vos statistiques ici !') }}</p>
+            <!-- Lien vers le dashboard -->
+            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Statistiques') }}
+            </x-nav-link>
+
+            <!-- Lien vers Mes posts -->
+            <x-nav-link :href="route('posts.my-posts')" :active="request()->routeIs('posts.my-posts')">
+                {{ __('Mes posts') }}
+            </x-nav-link>
         </h2>
     </x-slot>
 

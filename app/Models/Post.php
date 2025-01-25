@@ -27,5 +27,20 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($post) {
+            // Construit le chemin complet vers l'image
+            $imagePath = public_path('posts_photos/' . $post->image);
+
+            // Supprime l'image associée si elle existe
+            if ($post->image && file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        });
+    }
+
+
 }
 

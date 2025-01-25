@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black bg-fixed bg-pattern overflow-hidden">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -33,4 +33,6 @@
             </main>
         </div>
     </body>
+
+
 </html>

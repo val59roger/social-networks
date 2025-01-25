@@ -1,24 +1,28 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Vous avez oublié votre mot de passe ? Pas de problème. Indiquez-nous votre adresse électronique et nous vous enverrons un lien de réinitialisation du mot de passe qui vous permettra d en choisir un nouveau.') }}
-    </div>
+    <!-- Titre et Description -->
+    <h2 class="text-center text-2xl font-bold text-gray-800 mb-2">Mot de passe oublié</h2>
+    <p class="text-center text-sm text-gray-500 mb-6">
+        Pas de souci ! Indiquez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+    </p>
 
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-4 text-sm text-green-600" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
         @csrf
 
-        <!-- Email Address -->
+        <!-- Adresse Email -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-label for="email" :value="__('Adresse Email')" class="text-gray-700" />
+            <x-text-input id="email" class="block mt-2 w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          type="email" name="email" :value="old('email')" required autofocus />
+            <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-600" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Lien de réinitialisation du mot de passe par mail') }}
+        <!-- Bouton d'Envoi -->
+        <div class="flex items-center justify-center">
+            <x-primary-button class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                {{ __('Envoyer le lien de réinitialisation') }}
             </x-primary-button>
         </div>
     </form>
