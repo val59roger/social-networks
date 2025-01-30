@@ -58,9 +58,15 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
-    // Définir la relation inverse : un utilisateur a plusieurs publications
+    // Définir la relation avec users : un utilisateur a plusieurs publications
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    // Définir la relation avec likes : un utilisateur a plusieurs like
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
     }
 }

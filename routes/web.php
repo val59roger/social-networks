@@ -22,6 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    /* Mise en place de la route pour gérer les likes des posts */
+    Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
 
     Route::get('/friends', [FriendController::class, 'listeFriends'])->name('friends.liste-friends');
 

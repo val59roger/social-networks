@@ -10,9 +10,17 @@ class PostController extends Controller
     // Afficher la liste des publications (posts) via lastest() pour les afficher du plus récent au plus ancien
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
+        // Récupérer tous les posts avec les likes et l'utilisateur associé
+        $posts = Post::with('user', 'likes')->latest()->get();
+
+        // Ajouter un indicateur pour savoir si l'utilisateur connecté a liké chaque post
+        foreach ($posts as $post) {
+            $post->userLiked = $post->likes()->where('user_id', auth()->id())->exists();
+        }
+
         return view('posts.index', compact('posts'));
     }
+
 
     // Afficher la liste des publications de l'utilisateur connecté
     public function myPosts()
@@ -79,8 +87,6 @@ class PostController extends Controller
         return redirect()->route('posts.my-posts')->with('success', 'Post mis à jour avec succès.');
     }
 
-
-
     // Afficher la page de suppression
     public function destroy($id)
     {
@@ -89,6 +95,35 @@ class PostController extends Controller
 
         return redirect()->route('posts.my-posts')->with('success', 'Post supprimé avec succès.');
     }
+
+    // Gérer les likes
+    public function show(Post $post)
+    {
+        // Vérifiez si l'utilisateur a déjà liké ce post
+        $userLikedPost = $post->likes()->where('user_id', auth()->id())->exists();
+
+        return view('posts.show', compact('post', 'userLikedPost'));
+    }
+
+    public function toggleLike(Post $post)
+    {
+        // Vérifiez si l'utilisateur a déjà liké ce post
+        $like = $post->likes()->where('user_id', auth()->id())->first();
+
+        if ($like) {
+            // Si l'utilisateur a déjà liké, on retire le like
+            $like->delete();
+        } else {
+            // Sinon, on ajoute un like
+            $post->likes()->create(['user_id' => auth()->id()]);
+        }
+
+        return response()->json([
+            'likes_count' => $post->likes()->count(),
+            'user_liked' => $like ? false : true, // Retourne si l'utilisateur a liké ou pas
+        ]);
+    }
+
 }
 
 
