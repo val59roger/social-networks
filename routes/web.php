@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\CommentController;
 
 Route::get('/', function () {
     return redirect()->route('posts.index');
@@ -24,6 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     /* Mise en place de la route pour gérer les likes des posts */
     Route::post('/posts/{post}/like', [PostController::class, 'toggleLike'])->name('posts.like');
+    /* Mise en place de la route pour gérer les commentaires des posts */
+    Route::post('/posts/{post}/comment', [CommentController::class, 'store'])->middleware('auth');
+    /* Mise en place de la route pour éditer les commentaires des posts */
+    Route::post('/comments/{comment}/edit', [CommentController::class, 'update'])->middleware('auth');
+    /* Mise en place de la route pour supprimer les commentaires des posts */
+    Route::delete('/comments/{comment}/delete', [CommentController::class, 'destroy'])->middleware('auth');
+
 
     Route::get('/friends', [FriendController::class, 'listeFriends'])->name('friends.liste-friends');
 

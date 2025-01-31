@@ -1,5 +1,6 @@
 import './bootstrap';
 import './likes';
+import './comments';
 
 import Alpine from 'alpinejs';
 

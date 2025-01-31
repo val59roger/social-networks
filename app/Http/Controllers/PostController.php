@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\Comment;
 
 class PostController extends Controller
 {
@@ -11,7 +12,7 @@ class PostController extends Controller
     public function index()
     {
         // Récupérer tous les posts avec les likes et l'utilisateur associé
-        $posts = Post::with('user', 'likes')->latest()->get();
+        $posts = Post::with('user', 'likes', 'comments.user')->latest()->get();
 
         // Ajouter un indicateur pour savoir si l'utilisateur connecté a liké chaque post
         foreach ($posts as $post) {
@@ -123,7 +124,6 @@ class PostController extends Controller
             'user_liked' => $like ? false : true, // Retourne si l'utilisateur a liké ou pas
         ]);
     }
-
 }
 
 

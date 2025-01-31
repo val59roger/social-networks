@@ -35,6 +35,13 @@ class Post extends Model
         return $this->hasMany(Like::class);
     }
 
+    // Définir la relation avec comments : un posts a plusieurs commentaires
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+
     protected static function booted()
     {
         static::deleting(function ($post) {
