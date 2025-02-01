@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', function () {
             const postId = this.getAttribute('data-post-id');
             const commentSection = document.getElementById(`comment-section-${postId}`);
-
-            // Basculer l'affichage
             commentSection.classList.toggle('hidden');
         });
     });
@@ -54,14 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
 
                         <!-- Bouton Options (⋮) -->
-                        <button class="comment-options-btn text-gray-500 absolute right-2 top-2" data-comment-id="${data.comment.id}">
+                        <button class="comment-options-btn text-gray-500 absolute right-0 top-1/2 transform -translate-y-1/2" data-comment-id="${data.comment.id}">
                             ⋮
                         </button>
 
                         <!-- Menu contextuel -->
-                        <div class="comment-menu hidden absolute bg-white shadow-md rounded p-2 right-2 top-8" data-comment-id="${data.comment.id}">
-                            <button class="edit-comment text-blue-500 block w-full text-left px-2 py-1" data-comment-id="${data.comment.id}">Modifier</button>
-                            <button class="delete-comment text-red-500 block w-full text-left px-2 py-1" data-comment-id="${data.comment.id}">Supprimer</button>
+                        <div class="flex comment-menu hidden absolute bg-white shadow-md rounded right-0 z-10 border-2 border-black" data-comment-id="${data.comment.id}">
+                            <button class="edit-comment text-white bg-blue-500 p-2" data-comment-id="${data.comment.id}">Modifier</button>
+                            <button class="delete-comment text-white bg-red-500 p-2" data-comment-id="${data.comment.id}">Supprimer</button>
                         </div>
                     `;
 
@@ -103,15 +101,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 👉 Modifier un commentaire
     document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('edit-comment')) {
+        const editBtn = event.target.closest('.edit-comment');
+        if (editBtn) {
             console.log("Modification du commentaire 📝");
 
-            const commentId = event.target.getAttribute('data-comment-id');
+            const commentId = editBtn.getAttribute('data-comment-id');
+            // On s'assure que le bouton possède bien l'ID
+            if (!commentId) {
+                console.error("ID de commentaire non défini !");
+                return;
+            }
+
             const commentText = document.querySelector(`.comment-text[data-comment-id='${commentId}']`);
+            if (!commentText) {
+                console.error("Le contenu du commentaire n'a pas été trouvé pour l'ID", commentId);
+                return;
+            }
 
-            if (!commentText) return;
-
-            // Remplace le texte par un champ input
+            // Remplace le texte par un champ input pour l'édition
             const currentText = commentText.textContent;
             commentText.innerHTML = `<input type="text" class="border p-1 w-full edit-input" value="${currentText}">`;
 
@@ -119,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const inputField = commentText.querySelector('.edit-input');
             inputField.focus();
 
-            // Sauvegarde en appuyant sur Entrée
+            // Sauvegarder la modification lorsque l'utilisateur appuie sur "Enter"
             inputField.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter') {
                     const newText = this.value.trim();
@@ -134,8 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .then(response => response.json())
                         .then(data => {
-                            commentText.innerHTML = data.updatedContent; // Met à jour le texte
-                            console.log("Commentaire modifié ✅");
+                            if (data.updatedContent) {
+                                commentText.innerHTML = data.updatedContent; // Met à jour le contenu
+                                console.log("Commentaire modifié ✅");
+                            } else {
+                                console.error("Erreur de modification :", data.error);
+                            }
                         })
                         .catch(error => console.error('Erreur:', error));
                     }
@@ -144,37 +155,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
     // 👉 Supprimer un commentaire
     document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('delete-comment')) {
-            console.log("Suppression du commentaire ❌");
+        // Utiliser closest() pour s'assurer qu'on cible bien le bouton delete
+        const deleteBtn = event.target.closest('.delete-comment');
+        if (!deleteBtn) return; // Si le clic ne provient pas d'un bouton de suppression, on quitte
 
-            const commentId = event.target.getAttribute('data-comment-id');
-            if (!confirm("Voulez-vous vraiment supprimer ce commentaire ?")) return;
+        // Affichage de debug
+        console.log("Bouton de suppression cliqué :", deleteBtn);
+        const commentId = deleteBtn.getAttribute('data-comment-id');
+        console.log("ID récupéré :", commentId);
 
-            fetch(`/comments/${commentId}/delete`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Trouver le bloc parent du commentaire en remontant jusqu'à la div la plus proche
-                    const commentElement = event.target.closest('.flex.items-start.space-x-2.mt-3');
-
-                    if (commentElement) {
-                        commentElement.remove();
-                        console.log("Commentaire supprimé ✅");
-                    } else {
-                        console.warn("Commentaire non trouvé dans le DOM ❗");
-                    }
-                } else {
-                    console.error("Erreur de suppression:", data.error);
-                }
-            })
-            .catch(error => console.error('Erreur:', error));
+        if (!commentId) {
+            console.error("L'attribut data-comment-id est introuvable sur le bouton de suppression.");
+            return;
         }
+
+        if (!confirm("Voulez-vous vraiment supprimer ce commentaire ?")) return;
+
+        fetch(`/comments/${commentId}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remonter jusqu'au conteneur du commentaire.
+                // Ici, nous supposons que le conteneur principal du commentaire possède les classes suivantes :
+                // "flex items-start space-x-2 mt-3"
+                const commentElement = deleteBtn.closest('.flex.items-start.space-x-2.mt-3');
+                if (commentElement) {
+                    commentElement.remove();
+                    console.log("Commentaire supprimé ✅");
+                } else {
+                    console.warn("Le conteneur du commentaire n'a pas été trouvé.");
+                }
+            } else {
+                console.error("Erreur de suppression :", data.error);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
     });
 });

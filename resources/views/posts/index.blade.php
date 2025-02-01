@@ -70,7 +70,7 @@
                 <!-- Conteneur des commentaires existants -->
                 <div class="comments-container mt-3" data-post-id="{{ $post->id }}">
                     @foreach($post->comments as $comment)
-                        <div class="flex items-start space-x-2 mt-3">
+                        <div class="flex items-start space-x-2 mt-3 relative">
                             <!-- Photo de profil -->
                             <img src="{{ asset('storage/' . $comment->user->url_profile) }}"
                                 alt="Photo de {{ $comment->user->pseudo }}"
@@ -79,22 +79,23 @@
                             <!-- Détails du commentaire -->
                             <div>
                                 <p class="font-semibold text-sm">{{ $comment->user->pseudo }}</p>
-                                <p class="text-gray-700 text-sm">{{ $comment->content }}</p>
+                                <p class="comment-text text-gray-700 text-sm" data-comment-id="{{ $comment->id }}">{{ $comment->content }}</p>
                             </div>
 
-                            <!-- Bouton Options -->
-                            <button class="comment-options-btn text-gray-500" data-comment-id="{{ $comment->id }}">
+                            <!-- Bouton Options aligné à droite -->
+                            <button class="comment-options-btn text-gray-500 absolute right-0 top-1/2 transform -translate-y-1/2" data-comment-id="{{ $comment->id }}">
                                 ⋮
                             </button>
 
                             <!-- Menu contextuel -->
-                            <div class="comment-menu hidden absolute bg-white shadow-md rounded p-2" data-comment-id="{{ $comment->id }}">
-                                <button class="edit-comment text-blue-500" data-comment-id="{{ $comment->id}}">Modifier</button>
-                                <button class="delete-comment text-red-500" data-comment-id="{{ $comment->id}}">Supprimer</button>
+                            <div class="flex comment-menu hidden absolute bg-white shadow-md rounded right-0 z-10 border-2 border-black" data-comment-id="{{ $comment->id }}">
+                                <button class="edit-comment text-white bg-blue-500 p-2" data-comment-id="{{ $comment->id}}">Modifier</button>
+                                <button class="delete-comment text-white bg-red-500 p-2" data-comment-id="{{ $comment->id}}">Supprimer</button>
                             </div>
                         </div>
                     @endforeach
                 </div>
+
             </div>
         </div>
         @endforeach
