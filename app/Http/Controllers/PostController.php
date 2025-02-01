@@ -8,11 +8,11 @@ use App\Models\Comment;
 
 class PostController extends Controller
 {
-    // Afficher la liste des publications (posts) via lastest() pour les afficher du plus récent au plus ancien
+    // Afficher la liste des publications (posts) via lastest() pour les afficher de manière aléatoire
     public function index()
     {
         // Récupérer tous les posts avec les likes et l'utilisateur associé
-        $posts = Post::with('user', 'likes', 'comments.user')->latest()->get();
+        $posts = Post::with('user', 'likes', 'comments.user')->inRandomOrder()->get();
 
         // Ajouter un indicateur pour savoir si l'utilisateur connecté a liké chaque post
         foreach ($posts as $post) {
