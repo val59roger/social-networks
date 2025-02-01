@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Comment;
 
 class CommentController extends Controller
@@ -12,7 +13,7 @@ class CommentController extends Controller
         $request->validate(['content' => 'required|string']);
 
         $comment = Comment::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'post_id' => $postId,
             'content' => $request->content,
         ]);
@@ -20,8 +21,8 @@ class CommentController extends Controller
         return response()->json([
             'message' => 'Commentaire ajouté avec succès',
             'comment' => [
-                'user' => auth()->user()->pseudo,
-                'user_profile' => auth()->user()->url_profile, // URL de la photo de profil
+                'user' => Auth::user()->pseudo, // Nom de l'utilisateur
+                'user_profile' => Auth::user()->url_profile, // URL de la photo de profil
                 'content' => $comment->content, // Le texte du commentaire
             ],
         ]);
@@ -30,7 +31,7 @@ class CommentController extends Controller
     public function update(Request $request, Comment $comment)
     {
         // Vérifier si l'utilisateur est bien l'auteur
-        if (auth()->id() !== $comment->user_id) {
+        if (Auth::id() !== $comment->user_id) {
             return response()->json(['error' => 'Accès non autorisé'], 403);
         }
 
@@ -47,7 +48,7 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         // Vérifier si l'utilisateur est bien l'auteur
-        if (auth()->id() !== $comment->user_id) {
+        if (Auth::id() !== $comment->user_id) {
             return response()->json(['error' => 'Accès non autorisé'], 403);
         }
 

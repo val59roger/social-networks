@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Comment;
 
 class PostController extends Controller
@@ -16,7 +18,7 @@ class PostController extends Controller
 
         // Ajouter un indicateur pour savoir si l'utilisateur connecté a liké chaque post
         foreach ($posts as $post) {
-            $post->userLiked = $post->likes()->where('user_id', auth()->id())->exists();
+            $post->userLiked = $post->likes()->where('user_id', Auth::id())->exists();
         }
 
         return view('posts.index', compact('posts'));
@@ -26,7 +28,8 @@ class PostController extends Controller
     // Afficher la liste des publications de l'utilisateur connecté
     public function myPosts()
     {
-        $posts = auth()->user()->posts; // Récupère les posts de l'utilisateur connecté
+        $user = Auth::user();
+        $posts = $user->posts;
         return view('posts.my-posts', compact('posts'));
     }
 
@@ -53,7 +56,7 @@ class PostController extends Controller
 
         // Créer le post
         Post::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'image' => $imagePath,
@@ -66,7 +69,8 @@ class PostController extends Controller
     // Afficher le formulaire de modification
     public function edit($id)
     {
-        $post = auth()->user()->posts()->findOrFail($id);
+        // Récupère le post de l'utilisateur authentifié via la relation "posts"
+        $post = Auth::user()->posts()->findOrFail($id);
         return view('posts.edit', compact('post'));
     }
 
@@ -91,7 +95,7 @@ class PostController extends Controller
     // Afficher la page de suppression
     public function destroy($id)
     {
-        $post = auth()->user()->posts()->findOrFail($id);
+        $post = Auth::user()->posts()->findOrFail($id);
         $post->delete();
 
         return redirect()->route('posts.my-posts')->with('success', 'Post supprimé avec succès.');
@@ -101,7 +105,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         // Vérifiez si l'utilisateur a déjà liké ce post
-        $userLikedPost = $post->likes()->where('user_id', auth()->id())->exists();
+        $userLikedPost = $post->likes()->where('user_id', Auth::id())->exists();
 
         return view('posts.show', compact('post', 'userLikedPost'));
     }
@@ -109,14 +113,14 @@ class PostController extends Controller
     public function toggleLike(Post $post)
     {
         // Vérifiez si l'utilisateur a déjà liké ce post
-        $like = $post->likes()->where('user_id', auth()->id())->first();
+        $like = $post->likes()->where('user_id', Auth::id())->first();
 
         if ($like) {
             // Si l'utilisateur a déjà liké, on retire le like
             $like->delete();
         } else {
             // Sinon, on ajoute un like
-            $post->likes()->create(['user_id' => auth()->id()]);
+            $post->likes()->create(['user_id' => Auth::id()]);
         }
 
         return response()->json([
