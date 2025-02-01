@@ -69,8 +69,10 @@ class PostController extends Controller
     // Afficher le formulaire de modification
     public function edit($id)
     {
+        /** @var \App\Models\User $user */
         // Récupère le post de l'utilisateur authentifié via la relation "posts"
-        $post = Auth::user()->posts()->findOrFail($id);
+        $user = Auth::user();
+        $post = $user->posts()->findOrFail($id);
         return view('posts.edit', compact('post'));
     }
 
@@ -95,7 +97,10 @@ class PostController extends Controller
     // Afficher la page de suppression
     public function destroy($id)
     {
-        $post = Auth::user()->posts()->findOrFail($id);
+        /** @var \App\Models\User $user */
+        // Récupère le post de l'utilisateur authentifié via la relation "posts"
+        $user = Auth::user();
+        $post = $user->posts()->findOrFail($id);
         $post->delete();
 
         return redirect()->route('posts.my-posts')->with('success', 'Post supprimé avec succès.');
