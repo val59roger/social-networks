@@ -13,8 +13,11 @@ class PostController extends Controller
     // Afficher la liste des publications (posts) via lastest() pour les afficher de manière aléatoire
     public function index()
     {
-        // Récupérer tous les posts avec les likes et l'utilisateur associé
-        $posts = Post::with('user', 'likes', 'comments.user')->inRandomOrder()->get();
+        // Récupérer tous les posts sauf ceux de l'utilisateur connecté, en incluant les relations nécessaires
+        $posts = Post::with('user', 'likes', 'comments.user')
+            ->where('user_id', '!=', Auth::id())  // Exclure les posts de l'utilisateur connecté
+            ->inRandomOrder()
+            ->get();
 
         // Ajouter un indicateur pour savoir si l'utilisateur connecté a liké chaque post
         foreach ($posts as $post) {

@@ -69,4 +69,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Like::class);
     }
+
+    // Définir la relation avec comments : un utilisateur a plusieurs commentaires
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

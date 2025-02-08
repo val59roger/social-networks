@@ -45,7 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             alt="Photo de ${data.comment.user}"
                             class="w-10 h-10 rounded-full border border-gray-300">
                         <div>
-                            <p class="font-semibold text-sm">${data.comment.user}</p>
+                            <a href="/profile/${data.comment.user_id}" class="font-semibold text-sm text-blue-500 hover:underline">
+                                ${data.comment.user}
+                            </a>
                             <p class="comment-text text-gray-700 text-sm" data-comment-id="${data.comment.id}">
                                 ${data.comment.content}
                             </p>

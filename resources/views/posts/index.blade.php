@@ -20,7 +20,11 @@
                 </div>
                 <!-- Nom de l'utilisateur et date -->
                 <div class="ml-4">
-                    <p class="text-sm font-semibold text-gray-900">{{ $post->user->pseudo }}</p>
+                    <p class="text-sm font-semibold text-gray-900">
+                        <a href="{{ route('profile.show', $post->user->id) }}" class="text-blue-500 hover:underline">
+                            {{ $post->user->pseudo }}
+                        </a>
+                    </p>
                     <p class="text-xs text-gray-500">Publié le {{ $post->date_published->format('d/m/Y à H:i') }}</p>
                 </div>
             </div>
@@ -78,9 +82,12 @@
 
                             <!-- Détails du commentaire -->
                             <div>
-                                <p class="font-semibold text-sm">{{ $comment->user->pseudo }}</p>
+                                <a href="{{ route('profile.show', $post->user->id) }}" class="font-semibold text-sm text-blue-500 hover:underline">
+                                    {{ $comment->user->pseudo }}
+                                </a>
                                 <p class="comment-text text-gray-700 text-sm" data-comment-id="{{ $comment->id }}">{{ $comment->content }}</p>
                             </div>
+
 
                             <!-- Bouton Options aligné à droite -->
                             <button class="comment-options-btn text-gray-500 absolute right-0 top-1/2 transform -translate-y-1/2" data-comment-id="{{ $comment->id }}">

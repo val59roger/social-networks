@@ -21,6 +21,7 @@ class CommentController extends Controller
         return response()->json([
             'message' => 'Commentaire ajouté avec succès',
             'comment' => [
+                'user_id' => $comment->user->id, // ID de l'utilisateur
                 'user' => Auth::user()->pseudo, // Nom de l'utilisateur
                 'user_profile' => Auth::user()->url_profile, // URL de la photo de profil
                 'content' => $comment->content, // Le texte du commentaire
