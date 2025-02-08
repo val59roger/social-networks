@@ -82,7 +82,7 @@
 
                             <!-- Détails du commentaire -->
                             <div>
-                                <a href="{{ route('profile.show', $post->user->id) }}" class="font-semibold text-sm text-blue-500 hover:underline">
+                                <a href="{{ route('profile.show', $comment->user->id) }}" class="font-semibold text-sm text-blue-500 hover:underline">
                                     {{ $comment->user->pseudo }}
                                 </a>
                                 <p class="comment-text text-gray-700 text-sm" data-comment-id="{{ $comment->id }}">{{ $comment->content }}</p>

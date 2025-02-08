@@ -19,7 +19,10 @@
             <div class="flex flex-col lg:flex-row items-center lg:items-start lg:space-x-8">
                 <!-- Photo de profil -->
                 <div class="relative w-24 h-24">
-                    <img class="w-full h-full rounded-full object-cover" src="{{ asset('storage/' . $user->url_profile) }}" alt="Photo de profil">
+                    <img class="w-full h-full rounded-full object-cover" src="{{
+                        $user->url_profile
+                        ? asset('storage/' . $user->url_profile)
+                        : asset('storage/profile_photos/default-profile.jpg') }}" alt="Photo de profil">
                 </div>
 
                 <!-- Informations du profil -->
