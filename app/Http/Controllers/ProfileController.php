@@ -105,7 +105,7 @@ class ProfileController extends Controller
     public function show(User $user)
     {
         if ($user->id === Auth::id()) {
-            return redirect()->route('profile.me'); // Mauvaise redirection
+            return redirect()->route('dashboard'); // Mauvaise redirection
         }
         $posts = $user->posts()->latest()->get(); // Récupérer les posts de l'utilisateur
         return view('profile.show', compact('user', 'posts'));
