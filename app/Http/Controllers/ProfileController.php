@@ -89,15 +89,11 @@ class ProfileController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-
-        // Pour l'instant, initialiser les compteurs de followers et followings à 0
-        $followersCount = 0;
-        $followingCount = 0;
-
         $postsCount = $user->posts()->count();
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->follows()->count();
         $totalLikes = $user->posts()->withCount('likes')->get()->sum('likes_count');
         $totalComments = $user->comments()->count();
-
 
         return view('dashboard', compact('user', 'followersCount', 'followingCount', 'postsCount', 'totalLikes', 'totalComments'));
     }
@@ -105,10 +101,24 @@ class ProfileController extends Controller
     public function show(User $user)
     {
         if ($user->id === Auth::id()) {
-            return redirect()->route('dashboard'); // Mauvaise redirection
+            return redirect()->route('dashboard'); // renvoie vers le dashboard de la personne connecté.
         }
         $posts = $user->posts()->latest()->get(); // Récupérer les posts de l'utilisateur
         return view('profile.show', compact('user', 'posts'));
     }
 
+    /* Mise en place de la fonction de follow des users */
+    public function toggleFollow(User $user)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->follows()->where('followed_id', $user->id)->exists()) {
+            $user->follows()->detach($user->id);
+        } else {
+            $user->follows()->attach($user->id);
+        }
+
+        return back();
+    }
 }

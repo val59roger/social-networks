@@ -19,11 +19,30 @@
 
                 <!-- Informations sur l'utilisateur -->
                 <div class="ml-6">
-                    <h1 class="text-2xl font-semibold text-gray-800">{{ $user->pseudo }}</h1>
+                    <div class="flex items-center space-x-6 mt-4">
+                        <h1 class="text-2xl font-semibold text-gray-800">{{ $user->pseudo }}</h1>
+                    </div>
                     <div class="flex items-center space-x-6 mt-4">
                         <p><strong>{{ $user->posts->count() }}</strong> posts</p>
                         <p><strong>{{ $user->posts->sum('likes_count') }}</strong> likes</p>
                         <p><strong>{{ $user->comments->count() }}</strong> commentaires</p>
+                    </div>
+                    <div class="flex items-center space-x-6 mt-4">
+                        <p><strong>{{ $user->follows()->count() }}</strong> abonnements</p>
+                        <p><strong>{{ $user->followers()->count() }}</strong> abonnés</p>
+                        @if (Auth::user()->id !== $user->id)
+                            @if (Auth::user()->follows()->where('followed_id', $user->id)->exists())
+                                <form action="{{ route('follow.toggle', $user->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Unfollow</button>
+                                </form>
+                            @else
+                                <form action="{{ route('follow.toggle', $user->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded">Follow</button>
+                                </form>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
