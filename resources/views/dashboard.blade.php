@@ -40,6 +40,31 @@
                 </div>
             </div>
         </div>
+        <div class="max-w-4xl bg-white mx-auto p-8 mt-6 rounded-lg">
+            <!-- Section Profil en haut -->
+            <div class="flex flex-col lg:flex-row items-center lg:items-start lg:space-x-8">
+                <!-- Section des Followers -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Followers</h3>
+                    <div class="flex flex-wrap gap-4">
+                        @forelse ($followers as $follower)
+                            <div class="flex items-center space-x-3 p-2 border rounded-lg shadow-sm">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                    src="{{ $follower->url_profile ? asset('storage/' . $follower->url_profile) : asset('storage/profile_photos/default-profile.jpg') }}"
+                                    alt="Photo de {{ $follower->pseudo }}">
+                                <div>
+                                    <a href="{{ route('profile.show', $follower->id) }}" class="font-medium text-gray-800 hover:underline">
+                                        {{ $follower->pseudo }}
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-gray-600">Aucun follower pour l’instant.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </x-app-layout>

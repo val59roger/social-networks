@@ -94,8 +94,9 @@ class ProfileController extends Controller
         $followingCount = $user->follows()->count();
         $totalLikes = $user->posts()->withCount('likes')->get()->sum('likes_count');
         $totalComments = $user->comments()->count();
+        $followers = $user->followers()->with('posts')->get();
 
-        return view('dashboard', compact('user', 'followersCount', 'followingCount', 'postsCount', 'totalLikes', 'totalComments'));
+        return view('dashboard', compact('user', 'followersCount', 'followingCount', 'postsCount', 'totalLikes', 'totalComments', 'followers'));
     }
 
     public function show(User $user)
