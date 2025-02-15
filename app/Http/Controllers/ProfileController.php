@@ -110,13 +110,17 @@ class ProfileController extends Controller
     /* Mise en place de la fonction de follow des users */
     public function toggleFollow(User $user)
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
+        /** @var \App\Models\User $authUser */
+        $authUser = Auth::user(); // Récupère l'utilisateur connecté
 
-        if ($user->follows()->where('followed_id', $user->id)->exists()) {
-            $user->follows()->detach($user->id);
+        if ($authUser->id === $user->id) {
+            return back()->with('error', 'Vous ne pouvez pas vous suivre vous-même.');
+        }
+
+        if ($authUser->follows()->where('followed_id', $user->id)->exists()) {
+            $authUser->follows()->detach($user->id);
         } else {
-            $user->follows()->attach($user->id);
+            $authUser->follows()->attach($user->id);
         }
 
         return back();

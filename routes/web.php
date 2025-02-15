@@ -41,7 +41,6 @@ Route::middleware('auth')->group(function () {
     /* Mise en place de la route pour supprimer les commentaires des posts */
     Route::delete('/comments/{comment}/delete', [CommentController::class, 'destroy'])->middleware('auth');
 
-
     /* Mise en place de la route pour afficher les amis */
     Route::get('/friends', [FriendController::class, 'listeFriends'])->name('friends.liste-friends');
 

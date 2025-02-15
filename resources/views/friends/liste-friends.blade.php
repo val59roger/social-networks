@@ -27,78 +27,64 @@
 
             <!-- Liste d'amis -->
             <div class="mt-6 space-y-4">
-                <!-- Ami 1 -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <img
-                            src="https://via.placeholder.com/150"
-                            alt="Photo de profil"
-                            class="w-12 h-12 rounded-full object-cover">
-                        <div>
-                            <p class="font-medium text-gray-800">lajojovio</p>
-                            <p class="text-sm text-gray-500">lajojovio</p>
+                @forelse ($friends as $friend)
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img
+                                src="{{ $friend->url_profile ? asset('storage/' . $friend->url_profile) : asset('storage/profile_photos/default-profile.jpg') }}"
+                                alt="Photo de {{ $friend->pseudo }}"
+                                class="w-12 h-12 rounded-full object-cover"
+                            >
+                            <div>
+                                <a href="{{ route('profile.show', $friend->id) }}" class="font-medium text-gray-800 hover:underline">
+                                    {{ $friend->pseudo }}
+                                </a>
+                                <p class="text-sm text-gray-500">{{ $friend->email }}</p>
+                            </div>
                         </div>
+                        <form action="{{ route('follow.toggle', $friend->id) }}" method="POST">
+                            @csrf
+                            <button class="bg-gray-300 px-4 py-1 rounded-full text-sm hover:bg-gray-400">
+                                Retirer
+                            </button>
+                        </form>
                     </div>
-                    <button class="bg-gray-300 px-4 py-1 rounded-full text-sm hover:bg-gray-400">
-                        Retirer
-                    </button>
-                </div>
-
-                <!-- Ami 2 -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <img
-                            src="https://via.placeholder.com/150"
-                            alt="Photo de profil"
-                            class="w-12 h-12 rounded-full object-cover">
-                        <div>
-                            <p class="font-medium text-gray-800">fred_et_rock</p>
-                            <p class="text-sm text-gray-500">Fred B. 🤘🎸</p>
-                        </div>
-                    </div>
-                    <button class="bg-gray-300 px-4 py-1 rounded-full text-sm hover:bg-gray-400">
-                        Retirer
-                    </button>
-                </div>
+                @empty
+                    <p class="text-gray-600">Vous ne suivez encore personne.</p>
+                @endforelse
             </div>
 
             <!-- Suggestions Section -->
             <div class="mt-8">
                 <h3 class="text-lg font-semibold text-gray-800">Suggestions</h3>
                 <div class="mt-4 space-y-4">
-                    <!-- Suggestion 1 -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img
-                                src="https://via.placeholder.com/150"
-                                alt="Photo de profil"
-                                class="w-12 h-12 rounded-full object-cover">
-                            <div>
-                                <p class="font-medium text-gray-800">capsuledartiste</p>
-                                <p class="text-sm text-gray-500">Capsule d’Artiste</p>
+                    @forelse ($suggestions as $suggestion)
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img
+                                    src="{{ $suggestion->url_profile ? asset('storage/' . $suggestion->url_profile) : asset('storage/profile_photos/default-profile.jpg') }}"
+                                    alt="Photo de {{ $suggestion->pseudo }}"
+                                    class="w-12 h-12 rounded-full object-cover"
+                                >
+                                <div>
+                                    <a href="{{ route('profile.show', $suggestion->id) }}" class="font-medium text-gray-800 hover:underline">
+                                        {{ $suggestion->pseudo }}
+                                    </a>
+                                    <p class="text-sm text-gray-500">{{ $suggestion->email }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <button class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-600">
-                            Ajouter
-                        </button>
-                    </div>
 
-                    <!-- Suggestion 2 -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img
-                                src="https://via.placeholder.com/150"
-                                alt="Photo de profil"
-                                class="w-12 h-12 rounded-full object-cover">
-                            <div>
-                                <p class="font-medium text-gray-800">nadouphotocom</p>
-                                <p class="text-sm text-gray-500">Nadou 📸 Lyon, France</p>
-                            </div>
+                            <!-- Vérifie bien que c'est suggestion->id qui est envoyé -->
+                            <form action="{{ route('follow.toggle', ['user' => $suggestion->id]) }}" method="POST">
+                                @csrf
+                                <button class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-600">
+                                    Suivre
+                                </button>
+                            </form>
                         </div>
-                        <button class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm hover:bg-blue-600">
-                            Ajouter
-                        </button>
-                    </div>
+                    @empty
+                        <p class="text-gray-600">Aucune suggestion pour le moment.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
