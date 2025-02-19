@@ -13,16 +13,18 @@
             <!-- Info utilisateur -->
             <div class="text-sm text-gray-500">
                 Nous n’envoyons pas de notification quand vous modifiez votre liste d’amis proches.
-                <a href="#" class="text-blue-500 hover:underline">Comment ça marche</a>
             </div>
 
-            <!-- Barre de recherche -->
-            <div class="mt-4">
+            <!-- Barre de recherche avancée -->
+            <div class="mt-4 relative">
                 <input
                     type="text"
-                    placeholder="Rechercher"
+                    id="searchUsers"
+                    placeholder="Rechercher un utilisateur..."
                     class="w-full border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-300"
                 />
+                <!-- Conteneur pour les résultats -->
+                <div id="searchResults" class="absolute w-full bg-white shadow-md mt-2 rounded-lg hidden"></div>
             </div>
 
             <!-- Liste d'amis -->
