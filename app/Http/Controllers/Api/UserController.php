@@ -23,20 +23,5 @@ class UserController extends Controller
             'posts' => $user->posts()->select('id', 'content', 'created_at')->get()
         ]);
     }
-
-    // Suivre ou ne plus suivre un utilisateur via l'API
-    public function toggleFollow(User $user)
-    {
-        /** @var \App\Models\User $authUser */
-        $authUser = Auth::user();
-
-        if ($authUser->follows()->where('followed_id', $user->id)->exists()) {
-            $authUser->follows()->detach($user->id);
-            return response()->json(['message' => 'Vous ne suivez plus ' . $user->pseudo]);
-        } else {
-            $authUser->follows()->attach($user->id);
-            return response()->json(['message' => 'Vous suivez maintenant ' . $user->pseudo]);
-        }
-    }
 }
 
